@@ -1,6 +1,8 @@
 import pepeRight from './pepe-right.png'
 import pepeLeft from './pepe-left.png'
-import pepeFeelsBadMan from './pepe-feels-bad-man.png'
+import pepeFeelsLeftMan from './pepe-sad-left.png'
+import pepeFeelsRightMan from './pepe-sad-right.png'
+import datBoi from './boi.png';
 
 export default class Pepe {
     constructor(args) {
@@ -10,7 +12,11 @@ export default class Pepe {
         this.jump = false;
         this.create = args.create;
         this.onDie = args.onDie;
-        this.pepeLast = pepeRight;
+        this.lastDirection = 'right';
+        this.boiFrames;
+        this.boiFrameIndex = 0;
+        this.boiTickCount = 0;
+        this.boiTicksPerFrame = 30/5;
     }
 
     getMemed(){
@@ -19,20 +25,26 @@ export default class Pepe {
     }
 
     render(gameState){
-        this.width = gameState.screen.width / 15;
-        this.baseY = gameState.screen.height * 0.75;
+        this.boiTickCount++;
+        if(this.boiTickCount >= this.boiTicksPerFrame) {
+            this.boiFrameIndex++;
+            this.boiTickCount = 0;
+        }
+        if(this.boiFrameIndex > 4) this.boiFrameIndex = 0;
+        this.width = gameState.screen.width / 10;
+        this.baseY = gameState.screen.height * 0.5;
         // jump
         if(gameState.keys.up && this.position.y === this.baseY){
-            this.acceleration.y = -40; // jump power
+            this.acceleration.y = gameState.screen.height / -30; // jump power
         } else {
-            this.acceleration.y = 1.635; // gravity
+            this.acceleration.y = gameState.screen.height / 500; // gravity
         }
 
         // side to side
         if(gameState.keys.left){
-            this.velocity.x = -20;
+            this.velocity.x = gameState.screen.width / -125;
         } else if(gameState.keys.right){
-            this.velocity.x = 20;
+            this.velocity.x = gameState.screen.width / 125;
         } else {
             this.velocity.x = 0;
         }
@@ -64,17 +76,22 @@ export default class Pepe {
         const guy = new Image();
         if(gameState.keys.left) {
             guy.src = pepeLeft;
+            this.lastDirection = 'left';
         } else if(gameState.keys.right) {
             guy.src = pepeRight;
+            this.lastDirection = 'right';
         } else if(gameState.keys.up){
-            guy.src = this.velocity.x >= 0 ? pepeRight : pepeLeft;
+            guy.src = this.lastDirection === 'right' ? pepeRight : pepeLeft;
         } else if(gameState.keys.down){
-            guy.src = pepeFeelsBadMan;
+            guy.src = this.lastDirection === 'right' ? pepeFeelsRightMan : pepeFeelsLeftMan;
         } else {
-            guy.src = this.pepeLast;
+            guy.src = this.lastDirection === 'right' ? pepeRight : pepeLeft;
         }
-        this.pepeLast = guy.src;
         context.drawImage(guy, this.position.x, this.position.y, this.width, this.width);
+        const boi = new Image();
+        boi.src = datBoi;
+        console.log(boi.height);
+        context.drawImage(boi, this.boiFrameIndex * boi.width / 5, 0, boi.width / 5, boi.height, this.position.x, this.position.y, boi.width / 10, boi.height/2);
         context.restore();
     }
 }

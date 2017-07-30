@@ -95,6 +95,8 @@ export class MemeJump extends Component {
 
         context.save();
         context.scale(this.state.screen.ratio, this.state.screen.ratio);
+        context.fillStyle = '#191975';
+
         context.fillRect(0, 0, this.state.screen.width, this.state.screen.height);
 
         this.pepe.render(this.state);
@@ -118,7 +120,7 @@ export class MemeJump extends Component {
         let pepe = new Pepe({
             position: {
                 x: this.state.screen.width / 2,
-                y: this.state.screen.height * 0.75
+                y: this.state.screen.height * 0.5
             },
             onDie: this.gameOver.bind(this)
         });
