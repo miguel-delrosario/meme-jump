@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Guy from './Guy';
+import Pepe from './Pepe';
 
 const KEY = {
     UP: 38,
@@ -32,7 +32,7 @@ export class MemeJump extends Component {
             inGame: true,
             context: null,
         }
-        this.guy = null;
+        this.pepe = null;
     }
 
     handleResize(value, e){
@@ -49,6 +49,7 @@ export class MemeJump extends Component {
         let keys = this.state.keys;
         if (e.keyCode === KEY.UP || e.keyCode === KEY.W) keys.up = value;
         if (e.keyCode === KEY.LEFT || e.keyCode === KEY.A) keys.left = value;
+        if (e.keyCode === KEY.DOWN || e.keyCode === KEY.S) keys.down = value;
         if (e.keyCode === KEY.RIGHT || e.keyCode === KEY.D) keys.right = value;
         this.setState({
             keys: keys
@@ -90,12 +91,13 @@ export class MemeJump extends Component {
 
     update() {
         const context = this.state.context;
-        const guy = this.guy[0];
+        const pepe = this.pepe;
 
         context.save();
         context.scale(this.state.screen.ratio, this.state.screen.ratio);
+        context.fillRect(0, 0, this.state.screen.width, this.state.screen.height);
 
-        this.guy.render(this.state);
+        this.pepe.render(this.state);
 
         // Next frame
         requestAnimationFrame(() => {
@@ -112,15 +114,15 @@ export class MemeJump extends Component {
     }
 
     startGame() {
-        // Make Guy
-        let guy = new Guy({
+        // make Pepe
+        let pepe = new Pepe({
             position: {
                 x: this.state.screen.width / 2,
                 y: this.state.screen.height * 0.75
             },
             onDie: this.gameOver.bind(this)
         });
-        this.guy = guy;
+        this.pepe = pepe;
     }
 
     render() {
