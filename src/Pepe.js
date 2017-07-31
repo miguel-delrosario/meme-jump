@@ -1,41 +1,48 @@
-import pepeRight from './pepe-right.png'
-import pepeLeft from './pepe-left.png'
-import pepeFeelsLeftMan from './pepe-sad-left.png'
-import pepeFeelsRightMan from './pepe-sad-right.png'
-import datBoi from './boi.png';
+import pepeLeft from './images/pepe-left.png'
+import pepeRight from './images/pepe-right.png'
+import pepeFeelsLeftMan from './images/pepe-sad-left.png'
+import pepeFeelsRightMan from './images/pepe-sad-right.png'
 
 export default class Pepe {
     constructor(args) {
-        this.position = args.position;
+        this.position = this.bottomRight = this.topLeft = args.position;
         this.velocity = {x: 0, y: 0};
         this.acceleration = {x: 0, y: 0};
-        this.jump = false;
         this.create = args.create;
-        this.onDie = args.onDie;
+        this.gameOver = args.gameOver;
         this.lastDirection = 'right';
-        this.boiFrames;
-        this.boiFrameIndex = 0;
-        this.boiTickCount = 0;
-        this.boiTicksPerFrame = 30/5;
+        this.frames = 4;
+        this.frameIndex = 0;
+        this.tickCount = 0;
+        this.ticksPerFrame = 25 / this.frames;
+        this.bounce = false;
+        this.dead = false;
     }
 
     getMemed(){
-        this.delete = true;
-        this.onDie();
+        this.dead = true;
+        this.gameOver();
     }
 
     render(gameState){
-        this.boiTickCount++;
-        if(this.boiTickCount >= this.boiTicksPerFrame) {
-            this.boiFrameIndex++;
-            this.boiTickCount = 0;
+        this.width = gameState.screen.width / 12;
+        this.height = gameState.screen.height / 8;
+        this.baseY = gameState.screen.groundY - this.height;
+
+        // animate Pepe
+        this.tickCount++;
+        if(this.tickCount >= this.ticksPerFrame) {
+            this.frameIndex++;
+            this.tickCount = 0;
         }
-        if(this.boiFrameIndex > 4) this.boiFrameIndex = 0;
-        this.width = gameState.screen.width / 10;
-        this.baseY = gameState.screen.height * 0.5;
+        if(this.frameIndex > this.frames - 1) this.frameIndex = 0;
+
         // jump
         if(gameState.keys.up && this.position.y === this.baseY){
             this.acceleration.y = gameState.screen.height / -30; // jump power
+        } else if (this.bounce) {
+            this.velocity.y = -30;
+            this.bounce = false;
         } else {
             this.acceleration.y = gameState.screen.height / 500; // gravity
         }
@@ -69,29 +76,41 @@ export default class Pepe {
             this.velocity.y = 0;
         }
 
+        // set hurtbox
+        this.topLeft = {
+            x: this.position.x + 0.1 * this.width,
+            y: this.position.y + 0.1 * this.height
+        };
+
+        this.bottomRight = {
+            x: this.position.x + 0.9 * this.width,
+            y: this.position.y + 0.9 * this.height,
+        };
+
+        this.centerX = this.position.x + this.width / 2;
+
 
         // draw the guy
         const context = gameState.context;
         context.save();
-        const guy = new Image();
-        if(gameState.keys.left) {
-            guy.src = pepeLeft;
-            this.lastDirection = 'left';
-        } else if(gameState.keys.right) {
-            guy.src = pepeRight;
-            this.lastDirection = 'right';
-        } else if(gameState.keys.up){
-            guy.src = this.lastDirection === 'right' ? pepeRight : pepeLeft;
-        } else if(gameState.keys.down){
+        let guy = new Image();
+        if(gameState.keys.down && !gameState.keys.up && !gameState.keys.left && !gameState.keys.right) {
             guy.src = this.lastDirection === 'right' ? pepeFeelsRightMan : pepeFeelsLeftMan;
+            context.drawImage(guy, this.position.x, this.position.y, this.width, this.width);
         } else {
-            guy.src = this.lastDirection === 'right' ? pepeRight : pepeLeft;
+            if (gameState.keys.left) {
+                guy.src = pepeLeft;
+                this.lastDirection = 'left';
+            } else if (gameState.keys.right) {
+                guy.src = pepeRight;
+                this.lastDirection = 'right';
+            } else if (gameState.keys.up) {
+                guy.src = this.lastDirection === 'right' ? pepeRight : pepeLeft;
+            } else {
+                guy.src = this.lastDirection === 'right' ? pepeRight : pepeLeft;
+            }
+            context.drawImage(guy, this.frameIndex * guy.width / this.frames, 0, guy.width / this.frames, guy.height, this.position.x, this.position.y, this.width, this.height);
         }
-        context.drawImage(guy, this.position.x, this.position.y, this.width, this.width);
-        const boi = new Image();
-        boi.src = datBoi;
-        console.log(boi.height);
-        context.drawImage(boi, this.boiFrameIndex * boi.width / 5, 0, boi.width / 5, boi.height, this.position.x, this.position.y, boi.width / 10, boi.height/2);
         context.restore();
     }
 }
