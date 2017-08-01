@@ -10,7 +10,7 @@ canvas {
     height: 100%;
 }
 
-.endgame{
+.endgame {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -18,4 +18,30 @@ canvas {
     padding: 16px;
     z-index: 1;
     text-align: center;
+}
+
+.hud {
+    position: absolute;
+    top: 1%;
+    z-index: 1;
+}
+
+.combo {
+    left: 1%;
+}
+
+.score {
+    left: 50%;
+}
+
+.high-score {
+    right: 1%;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Arial Unicode MS', sans-serif;
+    font-size: 30px;
+    color: #000000;
 }
