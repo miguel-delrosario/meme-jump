@@ -1,4 +1,4 @@
-## Meme Jump (ak. PepeTrampoline)
+## Meme Jump (aka PepeTrampoline)
 
 A loving recreation of PapiTrampoline using React and HTML5 Canvas.
 
