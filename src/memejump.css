@@ -15,7 +15,7 @@ canvas {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    padding: 16px;
+    padding: 1em;
     z-index: 1;
     text-align: center;
 }
@@ -32,6 +32,7 @@ canvas {
 
 .score {
     left: 50%;
+    transform: translate(-50%, 0);
 }
 
 .high-score {
@@ -42,6 +43,6 @@ body {
     padding: 0;
     margin: 0;
     font-family: 'Arial Unicode MS', sans-serif;
-    font-size: 30px;
+    font-size: 2em;
     color: #000000;
 }

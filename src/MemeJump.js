@@ -225,17 +225,22 @@ export class MemeJump extends Component {
     gameOver(){
         this.setState({inGame: false});
         this.datBoi = [];
-        if(this.state.score >= this.state.high) {
+        if(this.state.score >= this.state.highScore) {
             window.localStorage.setItem("high-score", this.state.score)
         }
     }
 
     render() {
+        if(this.state.score >= this.state.highScore) {
+            this.message = `New high score of ${this.state.highScore}!`
+        } else {
+            this.message = `You scored ${this.state.score} points!`
+        }
         if(!this.state.inGame){
             this.endgame = (
                 <div className="endgame">
                     <p>Game Over</p>
-                    <p>You scored {this.state.score} points!</p>
+                    <p>{this.message}</p>
                     <button onClick={this.startGame.bind(this)}>
                         try again?
                     </button>
