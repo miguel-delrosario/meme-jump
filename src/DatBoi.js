@@ -75,11 +75,11 @@ export default class DatBoi {
             sprite.src = this.goingRight ? boiRight : boiLeft;
             context.drawImage(sprite, this.frameIndex * sprite.width / this.frames, 0, sprite.width / this.frames, sprite.height, this.position.x, this.position.y, this.width, this.height);
             // hitbox visualization
-            context.beginPath();
-            context.lineWidth="6";
-            context.strokeStyle="red";
-            context.rect(this.topLeft.x, this.topLeft.y, this.bottomRight.x - this.topLeft.x, this.bottomRight.y - this.topLeft.y);
-            context.stroke();
+            // context.beginPath();
+            // context.lineWidth="6";
+            // context.strokeStyle="red";
+            // context.rect(this.topLeft.x, this.topLeft.y, this.bottomRight.x - this.topLeft.x, this.bottomRight.y - this.topLeft.y);
+            // context.stroke();
         } else {
             if(this.deadFrames === 30) {
                 console.log("killed a boi");

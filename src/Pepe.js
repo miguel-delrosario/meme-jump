@@ -124,11 +124,12 @@ export default class Pepe {
         }
 
         // hitbox visualization
-        context.beginPath();
-        context.lineWidth="6";
-        context.strokeStyle="red";
-        context.rect(this.topLeft.x, this.topLeft.y, this.bottomRight.x - this.topLeft.x, this.bottomRight.y - this.topLeft.y);
-        context.stroke();
+        // context.beginPath();
+        // context.lineWidth="6";
+        // context.strokeStyle="red";
+        // context.rect(this.topLeft.x, this.topLeft.y, this.bottomRight.x - this.topLeft.x, this.bottomRight.y - this.topLeft.y);
+        // context.stroke();
+
         context.restore();
     }
 }
