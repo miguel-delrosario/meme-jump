@@ -289,9 +289,11 @@ export class MemeJump extends Component {
         return (
             <div>
                 {this.endgame}
-                <span className="combo hud">Combo: {this.state.combo}</span>
-                <span className="score hud">Score: {this.state.score}</span>
-                <span className="high-score hud">High Score: {this.state.highScore}</span>
+                <ul className="hud">
+                    <li className="combo">Combo: {this.state.combo}</li>
+                    <li className="score">Score: {this.state.score}</li>
+                    <li className="high-score">High Score: {this.state.highScore}</li>
+                </ul>
                 <canvas ref="canvas"
                         width={this.state.screen.width * this.state.screen.ratio}
                         height={this.state.screen.height * this.state.screen.ratio}/>

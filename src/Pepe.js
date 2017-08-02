@@ -6,7 +6,7 @@ export default class Pepe {
         this.resetCombo = args.resetCombo;
         this.gameOver = args.gameOver;
         this.lastDirection = 'right';
-        this.frames = 4;
+        this.frames = 6;
         this.frameIndex = 0;
         this.tickCount = 0;
         this.ticksPerFrame = 25 / this.frames;
