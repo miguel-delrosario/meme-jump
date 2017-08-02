@@ -26,7 +26,7 @@ export default class Pepe {
 
     render(gameState) {
         this.width = gameState.screen.width / 15;
-        this.height = gameState.screen.height / 10;
+        this.height = gameState.screen.height / 9;
         this.baseY = gameState.screen.groundY - this.height;
 
         // animate Pepe

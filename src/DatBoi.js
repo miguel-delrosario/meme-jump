@@ -1,12 +1,9 @@
-import boiLeft from './images/boi-left.png';
-import boiRight from './images/boi-right.png';
-
 export default class DatBoi {
     constructor(args) {
         this.goingRight = Math.round(Math.random());
         this.pointValue = 10;
         this.widthRatio = 10;
-        this.heightRatio = 4.75;
+        this.heightRatio = 4.5;
         this.position = {
             x: this.goingRight ? 0 - args.gameScreen.width / this.widthRatio : args.gameScreen.width + args.gameScreen.width / this.widthRatio,
             y: args.gameScreen.groundY - args.gameScreen.height / this.heightRatio,

@@ -28,7 +28,7 @@ export class MemeJump extends Component {
             screen: {
                 width: window.innerWidth,
                 height: window.innerHeight,
-                groundY: window.innerHeight * 0.85,
+                groundY: window.innerHeight * 0.87,
                 ratio: window.devicePixelRatio || 1,
             },
             keys: {
@@ -59,7 +59,7 @@ export class MemeJump extends Component {
         };
     }
 
-    handleResize(value, e){
+    handleResize(){
         this.setState({
             screen : {
                 width: window.innerWidth,
@@ -68,6 +68,12 @@ export class MemeJump extends Component {
                 ratio: window.devicePixelRatio || 1,
             }
         });
+
+        let context = this.state.context;
+        context.save();
+        context.scale(this.state.screen.ratio, this.state.screen.ratio);
+        context.drawImage(window.images.bliss, 0, 0, this.state.screen.width, this.state.screen.height);
+        context.restore();
     }
 
     handleKeys(value, e) {
@@ -89,50 +95,49 @@ export class MemeJump extends Component {
         const context = this.refs.canvas.getContext('2d');
         this.setState({ context: context });
 
+        // hitbox visibility flag
         window.hitboxVisualization = false;
 
         this.load(
             [
-                'bliss',
                 'pepeLeft',
                 'pepeRight',
                 'pepeFeelsRightMan',
                 'pepeFeelsLeftMan',
                 'boiLeft',
-                'boiRight'
+                'boiRight',
+                'bliss'
             ],
             [
-                Bliss,
                 PepeLeft,
                 PepeRight,
                 PepeFeelsRightMan,
                 PepeFeelsLeftMan,
                 BoiLeft,
-                BoiRight
-            ],
-            this.startGame.bind(this));
-
+                BoiRight,
+                Bliss
+            ]
+        );
     }
 
-    componentWillUnmount() {
-        window.removeEventListener('keyup', this.handleKeys.bind(this, false));
-        window.removeEventListener('keydown', this.handleKeys.bind(this, true));
-        window.removeEventListener('resize',  this.handleResize.bind(this, false));
-    }
-
-    load(names, images, loaded) {
+    load(names, images) {
         let img;
         let uploaded = {};
         for(let i = 0; i < images.length; i++) {
             img = new Image();
             if(i === images.length - 1) {
-                img.addEventListener('load', loaded); // start game when final image has loaded
+                img.addEventListener('load', () => {this.startGame()}); // start game when final image has loaded
             }
             img.src = images[i];
             uploaded[names[i]] = img;
         }
-
         window.images = uploaded;
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keyup', this.handleKeys.bind(this, false));
+        window.removeEventListener('keydown', this.handleKeys.bind(this, true));
+        window.removeEventListener('resize',  this.handleResize.bind(this));
     }
 
     startGame() {
@@ -278,7 +283,7 @@ export class MemeJump extends Component {
                 <div className="endgame">
                     <p>Game Over</p>
                     <p>{this.message}</p>
-                    <button onClick={this.startGame.bind(this)}>
+                    <button className="try-again pure-button" onClick={this.startGame.bind(this)}>
                         try again?
                     </button>
                 </div>
@@ -289,11 +294,9 @@ export class MemeJump extends Component {
         return (
             <div>
                 {this.endgame}
-                <ul className="hud">
-                    <li className="combo">Combo: {this.state.combo}</li>
-                    <li className="score">Score: {this.state.score}</li>
-                    <li className="high-score">High Score: {this.state.highScore}</li>
-                </ul>
+                <div className="hud combo">🔥 Combo: {this.state.combo}</div>
+                <div className="hud score">️🐸 Score: {this.state.score}</div>
+                <div className="hud high-score">🎉 High Score: {this.state.highScore}</div>
                 <canvas ref="canvas"
                         width={this.state.screen.width * this.state.screen.ratio}
                         height={this.state.screen.height * this.state.screen.ratio}/>
