@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import Pepe from './Pepe';
 import DatBoi from './DatBoi';
-import Lava from './images/lava.png';
+
+import Bliss from './images/bliss.jpg'
+import PepeLeft from './images/pepe-left.png'
+import PepeRight from './images/pepe-right.png'
+import PepeFeelsLeftMan from './images/pepe-sad-left.png'
+import PepeFeelsRightMan from './images/pepe-sad-right.png'
+import BoiLeft from './images/boi-left.png';
+import BoiRight from './images/boi-right.png';
 
 const KEY = {
     UP: 38,
@@ -47,7 +54,7 @@ export class MemeJump extends Component {
             datBoi: {
                 maxTimer: 60,
                 curTimer: 0,
-                maxAlive: 3,
+                maxAlive: 5,
             },
         };
     }
@@ -82,13 +89,50 @@ export class MemeJump extends Component {
         const context = this.refs.canvas.getContext('2d');
         this.setState({ context: context });
 
-        this.startGame();
+        window.hitboxVisualization = false;
+
+        this.load(
+            [
+                'bliss',
+                'pepeLeft',
+                'pepeRight',
+                'pepeFeelsRightMan',
+                'pepeFeelsLeftMan',
+                'boiLeft',
+                'boiRight'
+            ],
+            [
+                Bliss,
+                PepeLeft,
+                PepeRight,
+                PepeFeelsRightMan,
+                PepeFeelsLeftMan,
+                BoiLeft,
+                BoiRight
+            ],
+            this.startGame.bind(this));
+
     }
 
     componentWillUnmount() {
         window.removeEventListener('keyup', this.handleKeys.bind(this, false));
         window.removeEventListener('keydown', this.handleKeys.bind(this, true));
         window.removeEventListener('resize',  this.handleResize.bind(this, false));
+    }
+
+    load(names, images, loaded) {
+        let img;
+        let uploaded = {};
+        for(let i = 0; i < images.length; i++) {
+            img = new Image();
+            if(i === images.length - 1) {
+                img.addEventListener('load', loaded); // start game when final image has loaded
+            }
+            img.src = images[i];
+            uploaded[names[i]] = img;
+        }
+
+        window.images = uploaded;
     }
 
     startGame() {
@@ -116,14 +160,8 @@ export class MemeJump extends Component {
 
         context.save();
         context.scale(this.state.screen.ratio, this.state.screen.ratio);
-        let background = new Image();
-        background.src = "http://i.imgur.com/VvNhMb0.jpg"; // Windows XP Wallpaper (Bliss)
-        context.drawImage(background, 0, 0, this.state.screen.width, this.state.screen.height);
 
-        let floor = new Image();
-        // floor.src = "https://wallpaperscraft.com/image/nicolas_cage_texture_portrait_face_58062_3840x2160.jpg";
-        floor.src = Lava;
-        //context.drawImage(floor, 0, 0, floor.width, floor.height, 0, this.state.screen.height * 0.41, this.state.screen.width, this.state.screen.height);
+        context.drawImage(window.images.bliss, 0, 0, this.state.screen.width, this.state.screen.height);
 
         if(this.state.inGame) {
             this.checkCollisions(this.pepe, this.datBoi);
@@ -191,17 +229,16 @@ export class MemeJump extends Component {
         this[group].push(meme);
     }
 
-    sweepAwayDead(group){
-        let maxIndex = this[group].length;
-        for (let i = 0; i < maxIndex; i) {
-            if (this[group][i].deadFrames <= 0) {
-                this[group].splice(i, 1);
-                maxIndex--;
-            } else{
-                this[group][i].render(this.state);
-                i++;
+    sweepAwayDead(memeGroup){
+        this[memeGroup] = this[memeGroup].reduce((acc, meme) =>
+        {
+            if(meme.deadFrames > 0) {
+            meme.render(this.state);
+            return [...acc, meme];
+            } else {
+                return acc;
             }
-        }
+        }, []);
     }
 
     addScore(points){

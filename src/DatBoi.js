@@ -15,6 +15,7 @@ export default class DatBoi {
         this.bottomRight = {x: 0, y: 0};
         this.velocity = {x: 0, y: 0};
         this.addScore = args.addScore;
+        this.speedRatio = 300;
         this.frames = 5;
         this.frameIndex = 0;
         this.tickCount = 0;
@@ -44,7 +45,8 @@ export default class DatBoi {
         }
         if(this.frameIndex > this.frames - 1) this.frameIndex = 0;
 
-        this.velocity.x = this.goingRight ? gameState.screen.width / 300 : gameState.screen.width / -300;
+
+        this.velocity.x = this.goingRight ? gameState.screen.width / this.speedRatio : gameState.screen.width / -this.speedRatio;
 
         this.position.x += this.velocity.x;
         this.position.y = gameState.screen.groundY - this.height;
@@ -71,23 +73,25 @@ export default class DatBoi {
 
         // Dat Boi
         if(!this.dead) {
-            let sprite = new Image();
-            sprite.src = this.goingRight ? boiRight : boiLeft;
+            const sprite = this.goingRight ? window.images.boiRight : window.images.boiLeft;
             context.drawImage(sprite, this.frameIndex * sprite.width / this.frames, 0, sprite.width / this.frames, sprite.height, this.position.x, this.position.y, this.width, this.height);
             // hitbox visualization
-            // context.beginPath();
-            // context.lineWidth="6";
-            // context.strokeStyle="red";
-            // context.rect(this.topLeft.x, this.topLeft.y, this.bottomRight.x - this.topLeft.x, this.bottomRight.y - this.topLeft.y);
-            // context.stroke();
+            if(window.hitboxVisualization) {
+                context.beginPath();
+                context.lineWidth = "6";
+                context.strokeStyle = "red";
+                context.rect(this.topLeft.x, this.topLeft.y, this.bottomRight.x - this.topLeft.x, this.bottomRight.y - this.topLeft.y);
+                context.stroke();
+            }
         } else {
             if(this.deadFrames === 30) {
-                console.log("killed a boi");
                 this.velocity = {x: 0, y: 0};
                 this.deadY = this.position.y + (this.bottomRight.y - this.topLeft.y) / 2
                 this.deadX = this.position.x + (this.bottomRight.x - this.topLeft.x) / 2;
+                this.position.x = 0;
+                this.position.y = 0;
             }
-            context.font = "50px Arial";
+            context.font = "4vh Arial";
             context.fillText(`+${this.pointValue * gameState.combo}`, this.deadX, this.deadY);
             this.deadFrames--;
         }

@@ -1,8 +1,3 @@
-import pepeLeft from './images/pepe-left.png'
-import pepeRight from './images/pepe-right.png'
-import pepeFeelsLeftMan from './images/pepe-sad-left.png'
-import pepeFeelsRightMan from './images/pepe-sad-right.png'
-
 export default class Pepe {
     constructor(args) {
         this.position = this.bottomRight = this.topLeft = args.position;
@@ -103,32 +98,34 @@ export default class Pepe {
         this.centerX = this.topLeft.x + (this.bottomRight.x - this.topLeft.x) / 2;
 
 
-        // draw Pepe
         const context = gameState.context;
         context.save();
-        let sprite = new Image();
+        let sprite;
+        const i = window.images;
         if(gameState.keys.down && !gameState.keys.up && !gameState.keys.left && !gameState.keys.right) {
-            sprite.src = this.lastDirection === 'right' ? pepeFeelsRightMan : pepeFeelsLeftMan;
-            context.drawImage(sprite, this.position.x, this.position.y, this.width, this.width);
+            sprite = this.lastDirection === 'right' ? i.pepeFeelsRightMan : i.pepeFeelsLeftMan;
+            context.drawImage(sprite, this.position.x, this.position.y, this.width, this.height);
         } else {
             if (gameState.keys.left) {
-                sprite.src = pepeLeft;
+                sprite = i.pepeLeft;
             } else if (gameState.keys.right) {
-                sprite.src = pepeRight;
+                sprite = i.pepeRight;
             } else if (gameState.keys.up) {
-                sprite.src = this.lastDirection === 'right' ? pepeRight : pepeLeft;
+                sprite = this.lastDirection === 'right' ? i.pepeRight : i.pepeLeft;
             } else {
-                sprite.src = this.lastDirection === 'right' ? pepeRight : pepeLeft;
+                sprite = this.lastDirection === 'right' ? i.pepeRight : i.pepeLeft;
             }
             context.drawImage(sprite, this.frameIndex * sprite.width / this.frames, 0, sprite.width / this.frames, sprite.height, this.position.x, this.position.y, this.width, this.height);
         }
 
         // hitbox visualization
-        // context.beginPath();
-        // context.lineWidth="6";
-        // context.strokeStyle="red";
-        // context.rect(this.topLeft.x, this.topLeft.y, this.bottomRight.x - this.topLeft.x, this.bottomRight.y - this.topLeft.y);
-        // context.stroke();
+        if(window.hitboxVisualization) {
+            context.beginPath();
+            context.lineWidth = "6";
+            context.strokeStyle = "red";
+            context.rect(this.topLeft.x, this.topLeft.y, this.bottomRight.x - this.topLeft.x, this.bottomRight.y - this.topLeft.y);
+            context.stroke();
+        }
 
         context.restore();
     }
