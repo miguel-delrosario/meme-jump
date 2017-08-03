@@ -14,9 +14,15 @@ export default class Pepe {
         this.dead = false;
     }
 
-    getMemed(gameState) {
+    getMemed() {
         this.dead = true;
-        this.topLeft = this.bottomRight = {x: gameState.screen.width * 2, y: gameState.screen.height * 2};
+
+        // move hitbox offscreen
+        this.topLeft = {x: -1, y: -1};
+        this.bottomRight = {x: -1, y: -1};
+        this.centerY = -1;
+        this.centerX = -1;
+
         this.gameOver();
     }
 

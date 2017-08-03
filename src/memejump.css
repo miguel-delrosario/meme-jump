@@ -33,7 +33,6 @@ canvas {
 .combo {
     left: 1%
 }
-
 .score {
     left: 50%;
     transform: translate(-50%, 0);
@@ -53,9 +52,17 @@ canvas {
     text-align: center;
 }
 
-.endgame p {
-    font-size: 7vh;
+.endgame {
     font-family: 'Impact', sans-serif;
     color: white;
-    -webkit-text-stroke: 0.04em black;
+}
+
+.endgame  h2 {
+    font-size: 7vh;
+    -webkit-text-stroke: 0.045em black;
+}
+
+.endgame p {
+    font-size: 5vh;
+    -webkit-text-stroke: 0.06em black;
 }

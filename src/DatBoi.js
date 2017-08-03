@@ -23,11 +23,13 @@ export default class DatBoi {
 
     squish() {
         this.dead = true;
-        // remove hitbox
-        this.topLeft = {x: 0, y: 0};
-        this.bottomRight = {x: 0, y: 0};
-        this.centerY = 0;
-        this.centerX = 0;
+
+        // move hitbox offscreen
+        this.topLeft = {x: -1, y: -1};
+        this.bottomRight = {x: -1, y: -1};
+        this.centerY = -1;
+        this.centerX = -1;
+
         this.addScore(this.pointValue);
     }
 
