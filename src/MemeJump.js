@@ -199,16 +199,22 @@ export class MemeJump extends Component {
     }
 
     checkCollisions(pepe, groups) {
+        let pepeVulnerable;
+        let pepeDie;
+        let bounceCount;
+        let memesToSquish;
         for(let group of groups) {
-            let pepeVulnerable = true;
-            let pepeDie = false;
+            pepeVulnerable = true;
+            pepeDie = false;
+            bounceCount = 0;
+            memesToSquish = [];
             for (let meme of this[group]) {
                 if (pepe.velocity.y > -5 && pepe.bottomRight.y >= meme.topLeft.y && pepe.centerY <= meme.topLeft.y &&
                     ((pepe.topLeft.x <= meme.centerX && pepe.bottomRight.x >= meme.centerX) ||
                     (pepe.topLeft.x <= meme.topLeft.x && pepe.bottomRight.x >= meme.topLeft.x) ||
                     (pepe.bottomRight.x >= meme.bottomRight.x && pepe.topLeft.x <= meme.bottomRight.x))) {
-                    this.state.combo++;
-                    meme.squish();
+                    bounceCount++;
+                    memesToSquish.push(meme);
                     pepe.boing();
                     pepeVulnerable = false;
                 } else if (
@@ -220,6 +226,10 @@ export class MemeJump extends Component {
                         pepeDie = true;
                     }
                 }
+            }
+            this.setState({combo: this.state.combo + bounceCount});
+            for(let meme of memesToSquish) {
+                meme.squish();
             }
             if (pepeVulnerable && pepeDie) {
                 pepe.getMemed(this.state);
