@@ -284,7 +284,7 @@ export class MemeJump extends Component {
                     <p>Game Over</p>
                     <p>{this.message}</p>
                     <button className="try-again pure-button" onClick={this.startGame.bind(this)}>
-                        try again?
+                        >try again
                     </button>
                 </div>
             )

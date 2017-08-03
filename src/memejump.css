@@ -15,8 +15,9 @@ canvas {
 .try-again {
     margin-top: 1em;
     font-size: 2vh;
-    font-family: 'Comic Sans MS', sans-serif;
-    color: black;
+    font-family: 'Arial Unicode MS', sans-serif;
+    text-shadow: 0.07vh 0.07vh 0.07vh #c0c0c0;
+    color: #789922;
 }
 
 .hud {
