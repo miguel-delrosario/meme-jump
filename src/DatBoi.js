@@ -88,7 +88,8 @@ export default class DatBoi {
                 this.position.x = 0;
                 this.position.y = 0;
             }
-            context.font = "4vh Arial";
+            context.font = "4vh Comic Sans MS";
+            context.fillStyle = '#ffec21';
             context.fillText(`+${this.pointValue * gameState.combo}`, this.deadX, this.deadY);
             this.deadFrames--;
         }
