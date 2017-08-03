@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Pepe from './Pepe';
 import DatBoi from './DatBoi';
+import NyanCat from './NyanCat';
 
 import Bliss from './images/bliss.jpg'
 import PepeLeft from './images/pepe-left.png'
@@ -9,6 +10,8 @@ import PepeFeelsLeftMan from './images/pepe-sad-left.png'
 import PepeFeelsRightMan from './images/pepe-sad-right.png'
 import BoiLeft from './images/boi-left.png';
 import BoiRight from './images/boi-right.png';
+import NyanLeft from './images/nyan-left.png';
+import NyanRight from './images/nyan-right.png';
 
 const KEY = {
     UP: 38,
@@ -20,6 +23,9 @@ const KEY = {
     S: 83,
     D: 68,
 };
+
+// hitbox visibility flag
+window.hitboxVisualization = false;
 
 export class MemeJump extends Component {
     constructor() {
@@ -46,6 +52,7 @@ export class MemeJump extends Component {
         };
         this.pepe = null;
         this.datBoi = [];
+        this.nyanCat = [];
         this.memeCount = {
             overall: 0,
             datBoi: 0,
@@ -55,6 +62,11 @@ export class MemeJump extends Component {
                 maxTimer: 60,
                 curTimer: 0,
                 maxAlive: 5,
+            },
+            nyanCat: {
+                maxTimer: 150,
+                curTimer: 0,
+                maxAlive: 2,
             },
         };
     }
@@ -95,9 +107,6 @@ export class MemeJump extends Component {
         const context = this.refs.canvas.getContext('2d');
         this.setState({ context: context });
 
-        // hitbox visibility flag
-        window.hitboxVisualization = false;
-
         this.load(
             [
                 'pepeLeft',
@@ -106,6 +115,8 @@ export class MemeJump extends Component {
                 'pepeFeelsLeftMan',
                 'boiLeft',
                 'boiRight',
+                'nyanLeft',
+                'nyanRight',
                 'bliss'
             ],
             [
@@ -115,6 +126,8 @@ export class MemeJump extends Component {
                 PepeFeelsLeftMan,
                 BoiLeft,
                 BoiRight,
+                NyanLeft,
+                NyanRight,
                 Bliss
             ]
         );
@@ -169,10 +182,11 @@ export class MemeJump extends Component {
         context.drawImage(window.images.bliss, 0, 0, this.state.screen.width, this.state.screen.height);
 
         if(this.state.inGame) {
-            this.checkCollisions(this.pepe, this.datBoi);
+            let memeGroups = ['datBoi', 'nyanCat'];
 
-            this.spawn('datBoi');
-            this.sweepAwayDead('datBoi');
+            this.checkCollisions(this.pepe, memeGroups);
+            this.spawn(memeGroups);
+            this.sweepAwayDead(memeGroups);
             this.pepe.render(this.state);
 
             // Next frame
@@ -184,40 +198,44 @@ export class MemeJump extends Component {
         context.restore();
     }
 
-    checkCollisions(pepe, memeGroup) {
-        let pepeVulnerable = true;
-        let pepeDie = false;
-        for (let meme of memeGroup) {
-            if (pepe.velocity.y > 0 && pepe.bottomRight.y >= meme.topLeft.y && pepe.centerY <= meme.topLeft.y &&
-                ((pepe.topLeft.x <= meme.centerX && pepe.bottomRight.x >= meme.centerX) ||
-                (pepe.topLeft.x <= meme.topLeft.x && pepe.bottomRight.x >= meme.topLeft.x) ||
-                (pepe.bottomRight.x >= meme.bottomRight.x && pepe.topLeft.x <= meme.bottomRight.x))) {
-                this.state.combo++;
-                meme.squish();
-                pepe.boing();
-                pepeVulnerable = false;
-            } else if (
-                pepe.topLeft.x < meme.bottomRight.x &&
-                pepe.bottomRight.x > meme.topLeft.x &&
-                pepe.topLeft.y < meme.bottomRight.y &&
-                pepe.bottomRight.y > meme.topLeft.y) {
-                if(pepeVulnerable) {
-                    pepeDie = true;
+    checkCollisions(pepe, groups) {
+        for(let group of groups) {
+            let pepeVulnerable = true;
+            let pepeDie = false;
+            for (let meme of this[group]) {
+                if (pepe.velocity.y > -5 && pepe.bottomRight.y >= meme.topLeft.y && pepe.centerY <= meme.topLeft.y &&
+                    ((pepe.topLeft.x <= meme.centerX && pepe.bottomRight.x >= meme.centerX) ||
+                    (pepe.topLeft.x <= meme.topLeft.x && pepe.bottomRight.x >= meme.topLeft.x) ||
+                    (pepe.bottomRight.x >= meme.bottomRight.x && pepe.topLeft.x <= meme.bottomRight.x))) {
+                    this.state.combo++;
+                    meme.squish();
+                    pepe.boing();
+                    pepeVulnerable = false;
+                } else if (
+                    pepe.topLeft.x < meme.bottomRight.x &&
+                    pepe.bottomRight.x > meme.topLeft.x &&
+                    pepe.topLeft.y < meme.bottomRight.y &&
+                    pepe.bottomRight.y > meme.topLeft.y) {
+                    if (pepeVulnerable) {
+                        pepeDie = true;
+                    }
                 }
             }
-        }
-        if (pepeVulnerable && pepeDie) {
-            pepe.getMemed(this.state);
+            if (pepeVulnerable && pepeDie) {
+                pepe.getMemed(this.state);
+            }
         }
     }
 
-    spawn(group) {
-        let queue = this.memeQueue[group]
-        queue.curTimer--;
-        if (queue.curTimer <= 0) {
-            if (this[group].length < queue.maxAlive) {
-                this.newMeme(group);
-                this.memeQueue[group].curTimer = this.memeQueue[group].maxTimer;
+    spawn(groups) {
+        for(let group of groups) {
+            let queue = this.memeQueue[group]
+            queue.curTimer--;
+            if (queue.curTimer <= 0) {
+                if (this[group].length < queue.maxAlive) {
+                    this.newMeme(group);
+                    this.memeQueue[group].curTimer = this.memeQueue[group].maxTimer;
+                }
             }
         }
     }
@@ -228,22 +246,26 @@ export class MemeJump extends Component {
             case 'datBoi':
                 meme = new DatBoi({gameScreen: this.state.screen, addScore: this.addScore.bind(this)});
                 break;
+            case 'nyanCat':
+                meme = new NyanCat({gameScreen: this.state.screen, addScore: this.addScore.bind(this)});
+                break;
             default:
                 console.log("how'd it get here");
         }
         this[group].push(meme);
     }
 
-    sweepAwayDead(memeGroup){
-        this[memeGroup] = this[memeGroup].reduce((acc, meme) =>
-        {
-            if(meme.deadFrames > 0) {
-            meme.render(this.state);
-            return [...acc, meme];
-            } else {
-                return acc;
-            }
-        }, []);
+    sweepAwayDead(groups){
+        for(let group of groups) {
+            this[group] = this[group].reduce((acc, meme) => {
+                if (meme.deadFrames > 0) {
+                    meme.render(this.state);
+                    return [...acc, meme];
+                } else {
+                    return acc;
+                }
+            }, []);
+        }
     }
 
     addScore(points){
@@ -267,6 +289,7 @@ export class MemeJump extends Component {
     gameOver(){
         this.setState({inGame: false});
         this.datBoi = [];
+        this.nyanCat = [];
         if(this.state.score >= this.state.highScore) {
             window.localStorage.setItem("high-score", this.state.score)
         }
@@ -294,9 +317,9 @@ export class MemeJump extends Component {
         return (
             <div>
                 {this.endgame}
-                <div className="hud combo">🔥 Combo: {this.state.combo}</div>
-                <div className="hud score">️🐸 Score: {this.state.score}</div>
-                <div className="hud high-score">🎉 High Score: {this.state.highScore}</div>
+                <div className="hud combo"><span role="img">🔥</span> Combo: {this.state.combo}</div>
+                <div className="hud score"><span role="img">️🐸</span> Score: {this.state.score}</div>
+                <div className="hud high-score"><span role="img">🎉</span> High Score: {this.state.highScore}</div>
                 <canvas ref="canvas"
                         width={this.state.screen.width * this.state.screen.ratio}
                         height={this.state.screen.height * this.state.screen.ratio}/>

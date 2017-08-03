@@ -45,7 +45,7 @@ export default class Pepe {
             this.velocity.y = 0;
             this.bounce = false;
         } else {
-            this.acceleration.y = gameState.screen.height / 500; // gravity
+            this.acceleration.y = gameState.screen.height / 550; // gravity
         }
 
         // side to side
