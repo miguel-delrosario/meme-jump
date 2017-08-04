@@ -46,13 +46,13 @@ export default class Pepe {
 
         // jump
         if(gameState.keys.up && this.position.y === this.baseY){
-            this.acceleration.y = gameState.screen.height / -30; // jump power
+            this.acceleration.y = gameState.screen.height / -40; // jump power
         } else if (this.bounce) {
-            this.acceleration.y = gameState.screen.height / -30;
+            this.acceleration.y = gameState.screen.height / -40;
             this.velocity.y = 0;
             this.bounce = false;
         } else {
-            this.acceleration.y = gameState.screen.height / 550; // gravity
+            this.acceleration.y = gameState.screen.height / 800; // gravity
         }
 
         // side to side

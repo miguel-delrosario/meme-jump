@@ -5,7 +5,7 @@ export default class Meme {
         this.widthRatio = args.widthRatio;
         this.heightRatio = args.heightRatio;
         this.flyHeight = args.flyHeight;
-        this.speedRatio = args.speedRatio;
+        this.speedRatio = args.speedRatio * 0.75 + Math.random() * args.speedRatio * 0.25;
         this.hitBoxStartRatio = args.hitBoxStartRatio;
         this.hitBoxEndRatio = args.hitBoxEndRatio;
         this.heightBoxRatio = args.heightBoxRatio;
@@ -104,7 +104,11 @@ export default class Meme {
             }
             context.font = "4vh Comic Sans MS";
             context.fillStyle = '#ffec21';
-            context.fillText(`+${this.pointValue * gameState.combo}`, this.deadX, this.deadY);
+            if(gameState.combo > 1) {
+                context.fillText(`${this.pointValue}x${gameState.combo}`, this.deadX, this.deadY);
+            } else {
+                context.fillText(`${this.pointValue}`, this.deadX, this.deadY);
+            }
             this.deadFrames--;
         }
         context.restore();

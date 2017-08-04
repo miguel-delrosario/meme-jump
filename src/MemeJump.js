@@ -71,24 +71,18 @@ export class MemeJump extends Component {
         this.memeQueue = {
             doge: {
                 curTimer: 0,
-                maxTimer: 100,
-                absMinTimer: 75,
-                curMaxAlive: 3,
-                absMaxAlive: 4,
+                curMaxTimer: 150,
+                absMinTimer: 100,
             },
             datBoi: {
                 curTimer: 0,
-                maxTimer: 100,
-                absMinTimer: 60,
-                curMaxAlive: 3,
-                absMaxAlive: 3,
+                curMaxTimer: 200,
+                absMinTimer: 150,
             },
             nyanCat: {
                 curTimer: 0,
-                maxTimer: 150,
-                absMinTimer: 100,
-                curMaxAlive: 2,
-                absMaxAlive: 4,
+                curMaxTimer: 250,
+                absMinTimer: 200,
             },
         };
     }
@@ -183,6 +177,7 @@ export class MemeJump extends Component {
     startGame() {
         this.setState({
             inGame: true,
+            maxCombo: 0,
             score: 0
         });
         // make Pepe
@@ -266,28 +261,29 @@ export class MemeJump extends Component {
     spawn(groups) {
         for(let group of groups) {
             let queue = this.memeQueue[group];
-            if(this.memeCount[group] === queue.curMaxAlive * 2 && queue.curMaxAlive < queue.absMaxAlive) queue.curMaxAlive++;
             queue.curTimer--;
-            if (queue.curTimer <= 0) {
-                if (this[group].length < queue.curMaxAlive) {
-                    this.newMeme(group);
-                    this.memeQueue[group].curTimer = this.memeQueue[group].maxTimer;
+            if (queue.curTimer <= 0 || queue.curTimer === 2 * queue.curMaxTimer) {
+                this.newMeme(group);
+                queue.curTimer = queue.curMaxTimer;
+                if(queue.curMaxTimer > queue.absMinTimer) {
+                    queue.curMaxTimer -= 5;
                 }
             }
         }
     }
 
     newMeme(group) {
-        let meme;
+        let meme = {};
         let shouldSpawn = false;
         switch(group) {
             case 'doge':
+                shouldSpawn = true; // spawn Doge from the get-go
                 meme = new Meme({
                     gameScreen: this.state.screen,
-                    pointValue: 10,
+                    pointValue: 100,
                     widthRatio: 8,
                     heightRatio: 10,
-                    speedRatio: 500,
+                    speedRatio: 550,
                     flyHeight: 1,
                     frames: 6,
                     hitBoxStartRatio: 0,
@@ -297,43 +293,46 @@ export class MemeJump extends Component {
                     leftSprite: 'dogeLeft',
                     addScore: this.addScore.bind(this)
                 });
-                shouldSpawn = true; // spawn Doge from the get-go
                 break;
             case 'datBoi':
-                meme = new Meme({
-                    gameScreen: this.state.screen,
-                    pointValue: 15,
-                    widthRatio: 10,
-                    heightRatio: 4.5,
-                    speedRatio: 300,
-                    flyHeight: 1,
-                    frames: 5,
-                    hitBoxStartRatio: 0.25,
-                    hitBoxEndRatio: 0.6,
-                    heightBoxRatio: 1,
-                    rightSprite: 'boiRight',
-                    leftSprite: 'boiLeft',
-                    addScore: this.addScore.bind(this)
-                });
-                if(this.memeCount.doge >= 10) shouldSpawn = true; // spawn DatBois after 10 Doges have spawned
+                if(this.memeCount.doge >= 5) {
+                    shouldSpawn = true; // spawn DatBois after 10 Doges have spawned
+                    meme = new Meme({
+                        gameScreen: this.state.screen,
+                        pointValue: 150,
+                        widthRatio: 10,
+                        heightRatio: 4.5,
+                        speedRatio: 300,
+                        flyHeight: 1,
+                        frames: 5,
+                        hitBoxStartRatio: 0.25,
+                        hitBoxEndRatio: 0.6,
+                        heightBoxRatio: 1,
+                        rightSprite: 'boiRight',
+                        leftSprite: 'boiLeft',
+                        addScore: this.addScore.bind(this)
+                    });
+                }
                 break;
             case 'nyanCat':
-                meme = new Meme({
-                    gameScreen: this.state.screen,
-                    pointValue: 25,
-                    widthRatio: 8,
-                    heightRatio: 10,
-                    speedRatio: 300,
-                    flyHeight: 5.4,
-                    frames: 6,
-                    hitBoxStartRatio: 0.47,
-                    hitBoxEndRatio: 0.9,
-                    heightBoxRatio: 1,
-                    rightSprite: 'nyanRight',
-                    leftSprite: 'nyanLeft',
-                    addScore: this.addScore.bind(this)
-                });
-                if(this.memeCount.datBoi >= 10) shouldSpawn = true; // spawn NyanCats after 10 DatBois have spawned
+                if(this.memeCount.datBoi >= 5) {
+                    shouldSpawn = true; // spawn NyanCats after 10 DatBois have spawned
+                    meme = new Meme({
+                        gameScreen: this.state.screen,
+                        pointValue: 250,
+                        widthRatio: 8,
+                        heightRatio: 10,
+                        speedRatio: 400,
+                        flyHeight: 4,
+                        frames: 6,
+                        hitBoxStartRatio: 0.47,
+                        hitBoxEndRatio: 0.9,
+                        heightBoxRatio: 1,
+                        rightSprite: 'nyanRight',
+                        leftSprite: 'nyanLeft',
+                        addScore: this.addScore.bind(this)
+                    });
+                }
                 break;
             default:
         }
