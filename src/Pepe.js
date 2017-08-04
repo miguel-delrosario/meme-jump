@@ -11,6 +11,7 @@ export default class Pepe {
         this.tickCount = 0;
         this.ticksPerFrame = 25 / this.frames;
         this.bounce = false;
+        this.framesGrounded = 2; // arbitrary value over 1
         this.dead = false;
     }
 
@@ -31,8 +32,8 @@ export default class Pepe {
     }
 
     render(gameState) {
-        this.width = gameState.screen.width / 15;
-        this.height = gameState.screen.height / 9;
+        this.width = gameState.screen.width / 17;
+        this.height = gameState.screen.height / 11;
         this.baseY = gameState.screen.groundY - this.height;
 
         // animate Pepe
@@ -86,7 +87,10 @@ export default class Pepe {
 
         // reset bounce combo if Pepe is grounded
         if(this.position.y === this.baseY) {
+            this.framesGrounded++;
             this.resetCombo();
+        } else {
+            this.framesGrounded = 0;
         }
 
         // define hitbox
