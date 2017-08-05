@@ -22,7 +22,7 @@ export default class Meme {
         this.leftSprite = args.leftSprite;
         this.frameIndex = 0;
         this.tickCount = 0;
-        this.ticksPerFrame = 25 / this.frames;
+        this.ticksPerFrame = args.ticksPerFrame / this.frames;
         this.dead = false;
         this.deadFrames = 30;
     }
