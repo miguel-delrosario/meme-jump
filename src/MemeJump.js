@@ -87,6 +87,10 @@ export class MemeJump extends Component {
         };
     }
 
+    isMobileDevice() {
+    return typeof window.orientation !== "undefined" || navigator.userAgent.indexOf('IEMobile') !== -1;
+    };
+
     handleResize(){
         this.setState({
             screen : {
