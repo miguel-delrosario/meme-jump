@@ -59,7 +59,7 @@ canvas {
 
 .endgame  h2 {
     font-size: 7vh;
-    -webkit-text-stroke: 0.045em black;
+    -webkit-text-stroke: 0.02em black;
 }
 
 .endgame p {

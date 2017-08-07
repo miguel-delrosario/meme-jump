@@ -32,7 +32,6 @@ window.hitboxVisualization = false;
 export class MemeJump extends Component {
     constructor() {
         super();
-        screen.orientation.lock('landscape');
         this.groundRatio = 0.87;
         this.state = {
             screen: {
@@ -55,6 +54,7 @@ export class MemeJump extends Component {
             context: null,
             inGame: true,
         };
+
         this.pepe = null;
         this.resetGame();
     }
