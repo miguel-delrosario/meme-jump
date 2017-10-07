@@ -74,13 +74,14 @@ export default class Meme {
             this.centerY = this.position.y + (this.bottomRight.y - this.topLeft.y) / 2;
         }
 
-        // draw the NyanCat
+        // draw the Meme
         const context = gameState.context;
         context.save();
 
         if(!this.dead) {
             const sprite = this.goingRight ? window.images[this.rightSprite] : window.images[this.leftSprite];
             context.drawImage(sprite, this.frameIndex * sprite.width / this.frames, 0, sprite.width / this.frames, sprite.height, this.position.x, this.position.y, this.width, this.height);
+            
             // hitbox visualization
             if(window.hitboxVisualization) {
                 context.beginPath();
@@ -102,13 +103,16 @@ export default class Meme {
                 this.centerY = -1;
                 this.centerX = -1;
             }
+
             context.font = "4vh Comic Sans MS";
             context.fillStyle = '#ffec21';
+
             if(gameState.combo > 1) {
                 context.fillText(`${this.pointValue}x${gameState.combo}`, this.deadX, this.deadY);
             } else {
                 context.fillText(`${this.pointValue}`, this.deadX, this.deadY);
             }
+
             this.deadFrames--;
         }
         context.restore();

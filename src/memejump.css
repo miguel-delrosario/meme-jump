@@ -3,9 +3,6 @@
     margin: 0;
 }
 
-body {
-}
-
 canvas {
     position: absolute;
     display: block;
@@ -57,12 +54,11 @@ canvas {
     color: white;
 }
 
-.endgame  h2 {
-    font-size: 7vh;
-    -webkit-text-stroke: 0.02em black;
-}
-
 .endgame p {
     font-size: 5vh;
     -webkit-text-stroke: 0.06em black;
+}
+
+.you-died {
+    margin-bottom: 1vh;
 }

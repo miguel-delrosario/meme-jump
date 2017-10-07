@@ -13,6 +13,7 @@ import NyanLeft from './images/nyan-left.png';
 import NyanRight from './images/nyan-right.png';
 import DogeLeft from './images/doge-left.png';
 import DogeRight from './images/doge-right.png';
+import YouDied from './images/you-died.png';
 
 
 const KEY = {
@@ -56,6 +57,7 @@ export class MemeJump extends Component {
         };
 
         this.pepe = null;
+        this.memeGroups = ['doge', 'datBoi', 'nyanCat'];
         this.resetGame();
     }
 
@@ -185,6 +187,7 @@ export class MemeJump extends Component {
             maxCombo: 0,
             score: 0
         });
+
         // make Pepe
         this.pepe = new Pepe({
             position: {
@@ -209,11 +212,9 @@ export class MemeJump extends Component {
         context.drawImage(window.images.bliss, 0, 0, this.state.screen.width, this.state.screen.height);
 
         if(this.state.inGame) {
-            let memeGroups = ['doge', 'datBoi', 'nyanCat'];
-
-            this.checkCollisions(this.pepe, memeGroups);
-            this.spawn(memeGroups);
-            this.sweepAwayDead(memeGroups);
+            this.checkCollisions(this.pepe, this.memeGroups);
+            this.spawn(this.memeGroups);
+            this.sweepAwayDead(this.memeGroups);
             this.pepe.render(this.state);
 
             // next frame
@@ -344,6 +345,7 @@ export class MemeJump extends Component {
                 break;
             default:
         }
+
         if(shouldSpawn) {
             this[group].push(meme);
             this.memeCount.overall++;
@@ -394,14 +396,15 @@ export class MemeJump extends Component {
 
     render() {
         if(this.state.score >= this.state.highScore) {
-                this.message = `NEW HIGH SCORE OF ${this.state.highScore}!`
+            this.message = `NEW HIGH SCORE: ${this.state.highScore}!`;
         } else {
-            this.message = `YOU SCORED ${this.state.score} POINTS!`
+            this.message = `SCORE: ${this.state.score}!`;
         }
+
         if(!this.state.inGame){
             this.endgame = (
                 <div className="endgame">
-                    <h2>GAME OVER</h2>
+                    <img className="you-died" src={YouDied} alt="Game Over" height={this.state.screen.height / 10}/>
                     <p>{this.message}</p>
                     <button className="try-again pure-button" onClick={this.startGame.bind(this)}>
                         >try again
@@ -411,6 +414,7 @@ export class MemeJump extends Component {
         } else {
             this.endgame = null;
         }
+        
         return (
             <div>
                 {this.endgame}
