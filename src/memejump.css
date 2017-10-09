@@ -20,11 +20,15 @@ canvas {
 
 .hud {
     font-family: 'Comic Sans MS', sans-serif;
-    font-size: 3.5vh;
-    color: black;
+    font-size: 4vh;
     position: absolute;
     top: 1%;
     z-index: 1;
+}
+
+.hud-text {
+    color: white;
+    text-shadow: 0.25vh 0.25vh black;
 }
 
 .combo {

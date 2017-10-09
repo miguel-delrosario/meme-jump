@@ -41,12 +41,15 @@ export default class Meme {
         this.height = gameState.screen.height / this.heightRatio;
 
         // animate Meme
-        this.tickCount++;
-        if(this.tickCount >= this.ticksPerFrame) {
-            this.frameIndex++;
-            this.tickCount = 0;
+        if(!this.dead) {
+            this.tickCount++;
+            if(this.tickCount >= this.ticksPerFrame) {
+                this.frameIndex++;
+                this.tickCount = 0;
+            }
+
+            if(this.frameIndex >= this.frames) this.frameIndex = 0;
         }
-        if(this.frameIndex > this.frames - 1) this.frameIndex = 0;
 
 
         this.velocity.x = this.goingRight ? gameState.screen.width / this.speedRatio : gameState.screen.width / - this.speedRatio;
@@ -81,7 +84,7 @@ export default class Meme {
         if(!this.dead) {
             const sprite = this.goingRight ? window.images[this.rightSprite] : window.images[this.leftSprite];
             context.drawImage(sprite, this.frameIndex * sprite.width / this.frames, 0, sprite.width / this.frames, sprite.height, this.position.x, this.position.y, this.width, this.height);
-            
+
             // hitbox visualization
             if(window.hitboxVisualization) {
                 context.beginPath();
@@ -91,7 +94,7 @@ export default class Meme {
                 context.stroke();
             }
         } else {
-            if(this.deadFrames === 30) {
+            if(this.deadFrames === 30) { // Meme just died
                 this.velocity = {x: 0, y: 0};
                 this.deadY = this.centerY;
                 this.deadX = this.centerX;
@@ -102,17 +105,27 @@ export default class Meme {
                 this.bottomRight = {x: -1, y: -1};
                 this.centerY = -1;
                 this.centerX = -1;
+                this.frameIndex = 0;
             }
 
             context.font = "4vh Comic Sans MS";
             context.fillStyle = '#ffec21';
+            context.strokeStyle = 'black';
+            context.lineWidth = 1;
+
+            const poof = window.images["poof"];
+
+            context.drawImage(poof, 0, this.frameIndex * poof.height / 5, poof.width, poof.height / 5, this.deadX - this.width / 2, this.deadY - this.height / 4, this.width, this.height);
 
             if(gameState.combo > 1) {
-                context.fillText(`${this.pointValue}x${gameState.combo}`, this.deadX, this.deadY);
+                context.fillText(`${this.pointValue}x${gameState.combo}`, this.deadX - this.width / 4, this.deadY - this.height / 3);
+                context.strokeText(`${this.pointValue}x${gameState.combo}`, this.deadX - this.width / 4, this.deadY - this.height / 3);
             } else {
-                context.fillText(`${this.pointValue}`, this.deadX, this.deadY);
+                context.fillText(`${this.pointValue}`, this.deadX - this.width / 6, this.deadY - this.height / 3);
+                context.strokeText(`${this.pointValue}`, this.deadX - this.width / 6, this.deadY - this.height / 3);
             }
 
+            this.frameIndex = Math.round((30 - this.deadFrames) / 3); // poof animation ends after 15 frames
             this.deadFrames--;
         }
         context.restore();

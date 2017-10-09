@@ -13,8 +13,8 @@ import NyanLeft from './images/nyan-left.png';
 import NyanRight from './images/nyan-right.png';
 import DogeLeft from './images/doge-left.png';
 import DogeRight from './images/doge-right.png';
+import Poof from './images/poof.png';
 import YouDied from './images/you-died.png';
-
 
 const KEY = {
     UP: 38,
@@ -143,6 +143,8 @@ export class MemeJump extends Component {
                 'nyanRight',
                 'dogeLeft',
                 'dogeRight',
+                'poof',
+                'youDied',
                 'bliss'
             ],
             [
@@ -156,6 +158,8 @@ export class MemeJump extends Component {
                 NyanRight,
                 DogeLeft,
                 DogeRight,
+                Poof,
+                YouDied,
                 Bliss
             ]
         );
@@ -420,13 +424,15 @@ export class MemeJump extends Component {
                 {this.endgame}
                 <div className="hud combo">
                     <span role="img" aria-label="fire-emoji">🔥</span>
-                    <span className="max-combo"> {this.state.inGame ? `Combo: ${this.state.combo}` : `Max Combo: ${this.state.maxCombo}`}</span>
+                    <span className="hud-text max-combo">{this.state.inGame ? `Combo: ${this.state.combo}` : `Max Combo: ${this.state.maxCombo}`}</span>
                 </div>
                 <div className="hud score">
-                    <span role="img" aria-label="frog-emoji">️🐸</span> Score: {this.state.score}
+                    <span role="img" aria-label="frog-emoji">️🐸</span>
+                    <span className="hud-text">Score: {this.state.score}</span>
                 </div>
                 <div className="hud high-score">
-                    <span role="img" aria-label="party-popper-emoji">🎉</span> High Score: {this.state.highScore}
+                    <span role="img" aria-label="party-popper-emoji">🎉</span>
+                    <span className="hud-text">High Score: {this.state.highScore}</span>
                 </div>
                 <canvas ref="canvas"
                         width={this.state.screen.width * this.state.screen.ratio}
