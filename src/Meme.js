@@ -115,14 +115,14 @@ export default class Meme {
 
             const poof = window.images["poof"];
 
-            context.drawImage(poof, 0, this.frameIndex * poof.height / 5, poof.width, poof.height / 5, this.deadX - this.width / 2, this.deadY - this.height / 4, this.width, this.height);
+            context.drawImage(poof, 0, this.frameIndex * poof.height / 5, poof.width, poof.height / 5, this.deadX - this.width * 0.4, this.deadY - this.height / 3, this.width * 0.8, this.height + this.width * 0.2);
 
             if(gameState.combo > 1) {
-                context.fillText(`${this.pointValue}x${gameState.combo}`, this.deadX - this.width / 4, this.deadY - this.height / 3);
-                context.strokeText(`${this.pointValue}x${gameState.combo}`, this.deadX - this.width / 4, this.deadY - this.height / 3);
+                context.fillText(`${this.pointValue}x${gameState.combo}`, this.deadX - this.width / 4, this.deadY - this.height / 3 - this.width * 0.05);
+                context.strokeText(`${this.pointValue}x${gameState.combo}`, this.deadX - this.width / 4, this.deadY - this.height / 3 - this.width * 0.05);
             } else {
-                context.fillText(`${this.pointValue}`, this.deadX - this.width / 6, this.deadY - this.height / 3);
-                context.strokeText(`${this.pointValue}`, this.deadX - this.width / 6, this.deadY - this.height / 3);
+                context.fillText(`${this.pointValue}`, this.deadX - this.width / 6, this.deadY - this.height / 3 - this.width * 0.05);
+                context.strokeText(`${this.pointValue}`, this.deadX - this.width / 6, this.deadY - this.height / 3 - this.width * 0.05);
             }
 
             this.frameIndex = Math.round((30 - this.deadFrames) / 3); // poof animation ends after 15 frames
