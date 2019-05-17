@@ -11,5 +11,6 @@ Meme spritesheets by [Nitin Sachdeo](https://github.com/NitinSachdeo)
 https://miguel-delrosario.github.io/meme-jump/
 
 ### Run Locally
-```npm install```
-```npm start```
+1. Clone and enter repo directory
+1. ```npm install```
+1. ```npm start```
