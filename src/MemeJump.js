@@ -15,6 +15,7 @@ import DogeLeft from './images/doge-left.png';
 import DogeRight from './images/doge-right.png';
 import Poof from './images/poof.png';
 import YouDied from './images/you-died.png';
+import PaymentForm from "./PaymentForm";
 
 const KEY = {
     UP: 38,
@@ -54,6 +55,8 @@ export class MemeJump extends Component {
             maxCombo: 0,
             context: null,
             inGame: true,
+            modal: null,
+            upgradeEnabled: false
         };
 
         this.pepe = null;
@@ -120,6 +123,16 @@ export class MemeJump extends Component {
         this.setState({
             keys: keys
         });
+    }
+
+    componentWillMount() {
+        // copypasta'd from https://developer.squareup.com/blog/online-payments-form-react/
+        const that = this;
+        let sqPaymentScript = document.createElement("script");
+        sqPaymentScript.src = "https://js.squareup.com/v2/paymentform";
+        sqPaymentScript.type = "text/javascript";
+        sqPaymentScript.async = false;
+        document.getElementsByTagName("head")[0].appendChild(sqPaymentScript);
     }
 
     componentDidMount() {
@@ -189,7 +202,8 @@ export class MemeJump extends Component {
         this.setState({
             inGame: true,
             maxCombo: 0,
-            score: 0
+            score: 0,
+            modal: null,
         });
 
         // make Pepe
@@ -198,6 +212,7 @@ export class MemeJump extends Component {
                 x: this.state.screen.width / 2, // center x-coordinate
                 y: this.state.screen.groundY - this.state.screen.height / 6, // floor y-coordinate - height of Pepe
             },
+            speedMultiplier: (this.state.upgradeEnabled ? 2 : 1),
             resetCombo: this.resetCombo.bind(this),
             gameOver: this.gameOver.bind(this)
         });
@@ -388,8 +403,56 @@ export class MemeJump extends Component {
         this.setState({combo: 0});
     }
 
+    showPaymentForm() {
+        let paymentForm = (
+            <PaymentForm paymentForm={window.SqPaymentForm} enableUpgrade={this.enableUpgrade.bind(this)} close={this.closePaymentForm.bind(this)} />
+        )
+        this.setState({modal: paymentForm})
+    }
+
+    enableUpgrade() {
+        this.setState({upgradeEnabled: true});
+
+        this.startGame();
+    }
+
+    closePaymentForm() {
+        this.setState({
+            modal: this.endgame(),
+            upgradeEnabled: false,
+        });
+    }
+
+    endgame() {
+        let upgradeCharacter = null;
+        if (!this.state.upgradeEnabled) {
+            upgradeCharacter = (
+                <button className="try-again pure-button" onClick={this.showPaymentForm.bind(this)}>
+                    >upgrade character
+                </button>
+            )
+        }
+        return (
+            (
+                <div className="endgame modal">
+                    <img className="you-died" src={YouDied} alt="Game Over" height={this.state.screen.height / 10}/>
+                    <p>{this.message}</p>
+                    <div className="button-tray">
+                        <button className="try-again pure-button" onClick={this.startGame.bind(this)}>
+                            >try again
+                        </button>
+                        {upgradeCharacter}
+                    </div>
+                </div>
+            )
+        )
+    }
+
     gameOver(){
-        this.setState({inGame: false});
+        this.setState({
+            inGame: false,
+            modal: this.endgame(),
+        });
 
         this.resetGame();
 
@@ -405,23 +468,19 @@ export class MemeJump extends Component {
             this.message = `SCORE: ${this.state.score}!`;
         }
 
-        if(!this.state.inGame){
-            this.endgame = (
-                <div className="endgame">
-                    <img className="you-died" src={YouDied} alt="Game Over" height={this.state.screen.height / 10}/>
-                    <p>{this.message}</p>
-                    <button className="try-again pure-button" onClick={this.startGame.bind(this)}>
-                        >try again
-                    </button>
+        this.speedNotif = null;
+        if (this.state.upgradeEnabled) {
+            this.speedNotif = (
+                <div className="hud speed-notif">
+                    <span className="speed-notif">2xSpeed Active</span>
                 </div>
             )
-        } else {
-            this.endgame = null;
         }
-        
+
         return (
             <div>
-                {this.endgame}
+                {this.state.modal}
+                {this.speedNotif}
                 <div className="hud combo">
                     <span role="img" aria-label="fire-emoji">🔥</span>
                     <span className="hud-text max-combo">{this.state.inGame ? `Combo: ${this.state.combo}` : `Max Combo: ${this.state.maxCombo}`}</span>

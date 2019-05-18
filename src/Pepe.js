@@ -1,6 +1,7 @@
 export default class Pepe {
     constructor(args) {
         this.position = this.bottomRight = this.topLeft = args.position;
+        this.speedMultiplier = args.speedMultiplier;
         this.velocity = {x: 0, y: 0};
         this.acceleration = {x: 0, y: 0};
         this.resetCombo = args.resetCombo;
@@ -57,10 +58,10 @@ export default class Pepe {
 
         // side to side
         if(gameState.keys.left){
-            this.velocity.x = gameState.screen.width / -125;
+            this.velocity.x = gameState.screen.width * this.speedMultiplier / -125;
             this.lastDirection = 'left';
         } else if(gameState.keys.right){
-            this.velocity.x = gameState.screen.width / 125;
+            this.velocity.x = gameState.screen.width * this.speedMultiplier  / 125;
             this.lastDirection = 'right';
         } else {
             this.velocity.x = 0;

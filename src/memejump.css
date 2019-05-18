@@ -43,19 +43,25 @@ canvas {
     right: 1%;
 }
 
-.endgame {
+.modal {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 1em;
     z-index: 1;
-    text-align: center;
 }
 
 .endgame {
     font-family: 'Impact', sans-serif;
+    text-align: center;
     color: white;
+}
+
+.payment-form {
+    transform:  translate(-50%, -45%);
+    background: white;
+    border-radius: 10px;
 }
 
 .endgame p {
@@ -65,4 +71,18 @@ canvas {
 
 .you-died {
     margin-bottom: 1vh;
+}
+
+.button-tray {
+    display: flex;
+    justify-content: space-evenly;
+    margin: 0;
+}
+
+.speed-notif {
+    left: 1%;
+    top: 6%;
+    color: red;
+    font-size: 2vh;
+    text-shadow: 0.15vh 0.15vh black;
 }
