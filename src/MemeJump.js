@@ -127,7 +127,6 @@ export class MemeJump extends Component {
 
     componentWillMount() {
         // copypasta'd from https://developer.squareup.com/blog/online-payments-form-react/
-        const that = this;
         let sqPaymentScript = document.createElement("script");
         sqPaymentScript.src = "https://js.squareup.com/v2/paymentform";
         sqPaymentScript.type = "text/javascript";
